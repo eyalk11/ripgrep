@@ -1123,6 +1123,27 @@ impl ArgMatches {
         self.is_present("ignore-file-case-insensitive")
     }
 
+    //returns list of paths written inside filelist 
+    fn list_paths(&self) -> Vec<String> {
+        let path = self.value_of_os("filelist").unwrap();
+
+use std::fs::File;
+use std::io::BufRead;
+    // Open the file
+    //let file = File::open(Path::new(path));
+    // Create a buffer reader
+    let reader = io::BufReader::new(fs::File::open(Path::new(path)).unwrap());
+    // Collect the paths into a vector
+    let paths: Vec<String> = reader.lines()
+        .filter_map(|line| line.ok()) // Filter out any lines with read errors
+        .filter_map(|line| {
+            Some(line.trim().to_string()) // Extract the path and trim whitespace
+        })
+        .collect();
+
+            paths 
+    } 
+
     /// Return all of the ignore file paths given on the command line.
     fn ignore_paths(&self) -> Vec<PathBuf> {
         let paths = match self.values_of_os("ignore-file") {
@@ -1320,6 +1341,10 @@ impl ArgMatches {
             if let Some(path) = self.value_of_os("pattern") {
                 paths.insert(0, Path::new(path).to_path_buf());
             }
+        }
+        let fnlist= self.list_paths();  
+        for path in fnlist {
+            paths.push(Path::new(&path).to_path_buf());
         }
         paths
     }

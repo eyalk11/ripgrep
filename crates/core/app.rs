@@ -570,6 +570,7 @@ pub fn all_args_and_flags() -> Vec<RGArg> {
     flag_engine(&mut args);
     flag_field_context_separator(&mut args);
     flag_field_match_separator(&mut args);
+    flag_file_list(&mut args);
     flag_file(&mut args);
     flag_files(&mut args);
     flag_files_with_matches(&mut args);
@@ -1260,6 +1261,19 @@ character is the default value.
     let arg = RGArg::flag("field-match-separator", "SEPARATOR")
         .help(SHORT)
         .long_help(LONG);
+    args.push(arg);
+}
+fn flag_file_list(args: &mut Vec<RGArg>) {
+    const SHORT: &str = "A file that contains list of paths to include";
+    const LONG: &str = long!(
+        "\
+A file that contains list of paths to include
+"
+    );
+    let arg = RGArg::flag("filelist", "FILE")
+        .help(SHORT)
+        .long_help(LONG)
+        .allow_leading_hyphen();
     args.push(arg);
 }
 
